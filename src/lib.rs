@@ -26,6 +26,18 @@ impl<T> FnOnce<(T,)> for IntegerRing where Integer: From<T> {
     }
 }
 
+impl<T> FnMut<(T,)> for IntegerRing where Integer: From<T> {
+    extern "rust-call" fn call_mut(&mut self, (val,): (T,)) -> Self::Output {
+        IntegerRingElement { val: Integer::from(val) }
+    }
+}
+
+impl<T> Fn<(T,)> for IntegerRing where Integer: From<T> {
+    extern "rust-call" fn call(&self, (val,): (T,)) -> Self::Output {
+        IntegerRingElement { val: Integer::from(val) }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -33,7 +45,9 @@ mod tests {
     #[test]
     fn it_works() {
         let ZZ = IntegerRing;
+        let x = 3;
         println!("{}", ZZ);
-        println!("{:?}", ZZ(3 + 5));
+        println!("{:?}", ZZ(x));
+        println!("{:?}", ZZ(x));
     }
 }
