@@ -10,10 +10,10 @@ struct IntegerRingElement {
     val: Integer,
 }
 
-impl<T> Add<T> for IntegerRingElement where Integer: From<T> {
+impl Add for IntegerRingElement {
     type Output = IntegerRingElement;
-    fn add(self, _rhs: T) -> IntegerRingElement {
-        IntegerRingElement { val: self.val + Integer::from(_rhs) }
+    fn add(self, item: IntegerRingElement) -> Self::Output {
+        IntegerRingElement { val: self.val + item.val }
     }
 }
 
@@ -53,8 +53,9 @@ mod tests {
     fn it_works() {
         let ZZ = IntegerRing;
         let x = ZZ(2);
+        let y = ZZ(3);
         println!("{}", ZZ);
-        println!("{:?}", x.clone() + 2);
-        println!("{:?}", x.clone() + 2);
+        println!("{:?}", x.clone() + y.clone());
+        println!("{:?}", y.clone() + x.clone());
     }
 }
