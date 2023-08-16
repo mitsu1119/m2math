@@ -2,12 +2,19 @@
 #![feature(fn_traits)]
 
 use std::fmt;
-use std::ops::{FnOnce, FnMut, Fn};
+use std::ops::*;
 use rug::Integer;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct IntegerRingElement {
     val: Integer,
+}
+
+impl<T> Add<T> for IntegerRingElement where Integer: From<T> {
+    type Output = IntegerRingElement;
+    fn add(self, _rhs: T) -> IntegerRingElement {
+        IntegerRingElement { val: self.val + Integer::from(_rhs) }
+    }
 }
 
 #[derive(Debug)]
@@ -45,9 +52,9 @@ mod tests {
     #[test]
     fn it_works() {
         let ZZ = IntegerRing;
-        let x = 3;
+        let x = ZZ(2);
         println!("{}", ZZ);
-        println!("{:?}", ZZ(x));
-        println!("{:?}", ZZ(x));
+        println!("{:?}", x.clone() + 2);
+        println!("{:?}", x.clone() + 2);
     }
 }
