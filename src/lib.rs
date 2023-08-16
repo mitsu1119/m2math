@@ -5,9 +5,18 @@ use std::fmt;
 use std::ops::*;
 use rug::Integer;
 
-#[derive(Debug, Clone)]
+// ----------------------------------------------------------------
+// element of Integer Ring
+// ----------------------------------------------------------------
+#[derive(Debug, Clone, PartialEq)]
 struct IntegerRingElement {
     val: Integer,
+}
+
+impl fmt::Display for IntegerRingElement {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.val)
+    }
 }
 
 // ----------------------------------------------------------------
@@ -34,6 +43,9 @@ impl Mul for IntegerRingElement {
     }
 }
 
+// ----------------------------------------------------------------
+// Set of Integer Ring
+// ----------------------------------------------------------------
 #[derive(Debug)]
 struct IntegerRing;
 
@@ -62,6 +74,9 @@ impl<T> Fn<(T,)> for IntegerRing where Integer: From<T> {
     }
 }
 
+// ----------------------------------------------------------------
+// Test
+// ----------------------------------------------------------------
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -69,14 +84,9 @@ mod tests {
     #[test]
     fn it_works() {
         let ZZ = IntegerRing;
-        let x = ZZ(2);
-        let y = ZZ(3);
-        println!("{}", ZZ);
-        println!("{:?}", x.clone() + y.clone());
-        println!("{:?}", y.clone() + x.clone());
-        println!("{:?}", x.clone() - y.clone());
-        println!("{:?}", y.clone() - x.clone());
-        println!("{:?}", x.clone() * y.clone());
-        println!("{:?}", y.clone() * x.clone());
+        assert_eq!(ZZ(2) + ZZ(5), ZZ(7));
+        assert_eq!(ZZ(2) - ZZ(5), ZZ(-3));
+        assert_eq!(ZZ(5) - ZZ(2), ZZ(3));
+        assert_eq!(ZZ(5) * ZZ(2), ZZ(10));
     }
 }
