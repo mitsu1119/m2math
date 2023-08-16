@@ -23,23 +23,41 @@ impl fmt::Display for IntegerRingElement {
 // Arithmetic Operators
 // ----------------------------------------------------------------
 impl Add for IntegerRingElement {
-    type Output = IntegerRingElement;
-    fn add(self, item: IntegerRingElement) -> Self::Output {
+    type Output = Self;
+    fn add(self, item: Self) -> Self::Output {
         IntegerRingElement { val: self.val + item.val }
     }
 }
 
 impl Sub for IntegerRingElement {
-    type Output = IntegerRingElement;
-    fn sub(self, item: IntegerRingElement) -> Self::Output {
+    type Output = Self;
+    fn sub(self, item: Self) -> Self::Output {
         IntegerRingElement { val: self.val - item.val }
     }
 }
 
 impl Mul for IntegerRingElement {
-    type Output = IntegerRingElement;
-    fn mul(self, item: IntegerRingElement) -> Self::Output {
+    type Output = Self;
+    fn mul(self, item: Self) -> Self::Output {
         IntegerRingElement { val: self.val * item.val }
+    }
+}
+
+impl AddAssign for IntegerRingElement {
+    fn add_assign(&mut self, other: Self) {
+        *self = Self { val: &self.val + other.val };
+    }
+}
+
+impl SubAssign for IntegerRingElement {
+    fn sub_assign(&mut self, other: Self) {
+        *self = Self { val: &self.val - other.val };
+    }
+}
+
+impl MulAssign for IntegerRingElement {
+    fn mul_assign(&mut self, other: Self) {
+        *self = Self { val: &self.val * other.val };
     }
 }
 
