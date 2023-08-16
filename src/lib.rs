@@ -10,10 +10,27 @@ struct IntegerRingElement {
     val: Integer,
 }
 
+// ----------------------------------------------------------------
+// Arithmetic Operators
+// ----------------------------------------------------------------
 impl Add for IntegerRingElement {
     type Output = IntegerRingElement;
     fn add(self, item: IntegerRingElement) -> Self::Output {
         IntegerRingElement { val: self.val + item.val }
+    }
+}
+
+impl Sub for IntegerRingElement {
+    type Output = IntegerRingElement;
+    fn sub(self, item: IntegerRingElement) -> Self::Output {
+        IntegerRingElement { val: self.val - item.val }
+    }
+}
+
+impl Mul for IntegerRingElement {
+    type Output = IntegerRingElement;
+    fn mul(self, item: IntegerRingElement) -> Self::Output {
+        IntegerRingElement { val: self.val * item.val }
     }
 }
 
@@ -57,5 +74,9 @@ mod tests {
         println!("{}", ZZ);
         println!("{:?}", x.clone() + y.clone());
         println!("{:?}", y.clone() + x.clone());
+        println!("{:?}", x.clone() - y.clone());
+        println!("{:?}", y.clone() - x.clone());
+        println!("{:?}", x.clone() * y.clone());
+        println!("{:?}", y.clone() * x.clone());
     }
 }
