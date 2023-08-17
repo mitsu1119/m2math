@@ -23,9 +23,31 @@ impl FiniteField {
     }
 }
 
-pub fn GF(order: IntegerRingElement) -> FiniteField {
-    FiniteField::new(order)
+// ----------------------------------------------------------------
+// Factory of Finite field
+// ----------------------------------------------------------------
+pub struct FiniteFieldFactory;
+
+impl FnOnce<(IntegerRingElement,)> for FiniteFieldFactory {
+    type Output = FiniteField;
+    extern "rust-call" fn call_once(self, (order,): (IntegerRingElement,)) -> Self::Output {
+        FiniteField::new(order)
+    }
 }
+
+impl FnMut<(IntegerRingElement,)> for FiniteFieldFactory {
+    extern "rust-call" fn call_mut(&mut self, (order,): (IntegerRingElement,)) -> Self::Output {
+        FiniteField::new(order)
+    }
+}
+
+impl Fn<(IntegerRingElement,)> for FiniteFieldFactory {
+    extern "rust-call" fn call(&self, (order,): (IntegerRingElement,)) -> Self::Output {
+        FiniteField::new(order)
+    }
+}
+
+pub const GF: FiniteFieldFactory = FiniteFieldFactory;
 
 // ----------------------------------------------------------------
 // Test
