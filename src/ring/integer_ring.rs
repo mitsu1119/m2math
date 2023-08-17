@@ -7,7 +7,7 @@ use std::cmp::Ordering;
 // element of Integer Ring
 // ----------------------------------------------------------------
 #[derive(Debug, Clone, PartialEq, Eq)]
-struct IntegerRingElement {
+pub struct IntegerRingElement {
     val: Integer,
 }
 
@@ -78,7 +78,7 @@ impl Ord for IntegerRingElement {
 // Set of Integer Ring
 // ----------------------------------------------------------------
 #[derive(Debug)]
-struct IntegerRing;
+pub struct IntegerRing;
 
 impl fmt::Display for IntegerRing {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -120,6 +120,8 @@ impl IntegerRing {
     }
 }
 
+pub const ZZ: IntegerRing = IntegerRing;
+
 // ----------------------------------------------------------------
 // Test
 // ----------------------------------------------------------------
@@ -129,7 +131,6 @@ mod tests {
 
     #[test]
     fn it_works() {
-        let ZZ = IntegerRing;
         assert_eq!(ZZ(2) + ZZ(5), ZZ(7));
         assert_eq!(ZZ(2) - ZZ(5), ZZ(-3));
         assert_eq!(ZZ(5) - ZZ(2), ZZ(3));
@@ -145,14 +146,12 @@ mod tests {
     #[test]
     #[should_panic]
     fn test_panic_radix_from_str() {
-        let ZZ = IntegerRing;
         ZZ.from_str("12345678913280321980321804372894327894327894327899f");
     }
     
     #[test]
     #[should_panic]
     fn test_panic_radix_from_str_radix() {
-        let ZZ = IntegerRing;
         ZZ.from_str_radix("12345678913280321980321804372894327894327894327899", 8);
     }
 }
