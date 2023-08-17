@@ -110,7 +110,7 @@ impl Ord for IntegerRingElement {
 // ----------------------------------------------------------------
 // Set of Integer Ring
 // ----------------------------------------------------------------
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub struct IntegerRing;
 
 impl Set for IntegerRing {

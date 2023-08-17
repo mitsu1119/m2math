@@ -1,12 +1,31 @@
 use std::fmt;
 use crate::ring::integer_ring::*;
+use crate::util::element::Element;
+use crate::util::set::Set;
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct FiniteFieldElement {
+    val: IntegerRingElement,
+    parent: FiniteField
+}
+
+impl Element for FiniteFieldElement {
+    type Parent = FiniteField;
+    fn parent(&self) -> Self::Parent {
+        self.parent.clone()
+    }
+}
 
 // ----------------------------------------------------------------
 // Set of Finite field
 // ----------------------------------------------------------------
-#[derive(Debug)]
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub struct FiniteField {
     order: IntegerRingElement
+}
+
+impl Set for FiniteField {
+    type Child = FiniteFieldElement;
 }
 
 impl fmt::Display for FiniteField {
@@ -20,6 +39,25 @@ impl FiniteField {
         // TODO: finite field that the order is a prime power
         if !order.is_prime() { panic!("The order of a finite field must be a prime"); }
         Self { order: order }
+    }
+}
+
+impl FnOnce<(IntegerRingElement,)> for FiniteField {
+    type Output = FiniteFieldElement;
+    extern "rust-call" fn call_once(self, (val,): (IntegerRingElement,)) -> Self::Output {
+        FiniteFieldElement { val: val % self.order.clone(), parent: self }
+    }
+}
+
+impl FnMut<(IntegerRingElement,)> for FiniteField {
+    extern "rust-call" fn call_mut(&mut self, (val,): (IntegerRingElement,)) -> Self::Output {
+        FiniteFieldElement { val: val % self.order.clone(), parent: self.clone() }
+    }
+}
+
+impl Fn<(IntegerRingElement,)> for FiniteField {
+    extern "rust-call" fn call(&self, (val,): (IntegerRingElement,)) -> Self::Output {
+        FiniteFieldElement { val: val % self.order.clone(), parent: self.clone() }
     }
 }
 
@@ -60,6 +98,9 @@ mod tests {
     fn it_works() {
         let Fp = GF(ZZ(5));
         println!("{}", Fp);
+        println!("{:?}", Fp(ZZ(4)));
+        println!("{:?}", Fp(ZZ(10)));
+        println!("{:?}", Fp(ZZ(12)));
     }
 
     #[test]
