@@ -108,6 +108,21 @@ impl<T> Fn<(T,)> for IntegerRing where Integer: From<T> {
     }
 }
 
+impl IntegerRing {
+    fn from_str_radix(&self, n_str: &str, radix: i32) -> IntegerRingElement {
+        match Integer::from_str_radix(n_str, radix) {
+            Ok(v) => IntegerRingElement { val: v },
+            Err(e) => {
+                panic!("Error from_str_radix: {}", e);
+            }
+        }
+    }
+
+    fn from_str(&self, n_str: &str) -> IntegerRingElement {
+        self.from_str_radix(n_str, 10)
+    }
+}
+
 // ----------------------------------------------------------------
 // Test
 // ----------------------------------------------------------------
@@ -128,5 +143,19 @@ mod tests {
         assert!(ZZ(6) > ZZ(5));
         assert!(ZZ(5) < ZZ(6));
         assert!(ZZ(5) <= ZZ(6));
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_panic_radix_from_str() {
+        let ZZ = IntegerRing;
+        ZZ.from_str("12345678913280321980321804372894327894327894327899f");
+    }
+    
+    #[test]
+    #[should_panic]
+    fn test_panic_radix_from_str_radix() {
+        let ZZ = IntegerRing;
+        ZZ.from_str_radix("12345678913280321980321804372894327894327894327899", 8);
     }
 }
