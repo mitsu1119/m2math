@@ -10,6 +10,7 @@ use std::cmp::Ordering;
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct IntegerRingElement {
     val: Integer,
+    parent: IntegerRing
 }
 
 impl fmt::Display for IntegerRingElement {
@@ -25,6 +26,10 @@ impl IntegerRingElement {
             _ => true
         }
     }
+
+    pub fn parent(&self) -> IntegerRing {
+        self.parent.clone()
+    }
 }
 
 // ----------------------------------------------------------------
@@ -33,52 +38,52 @@ impl IntegerRingElement {
 impl Add for IntegerRingElement {
     type Output = Self;
     fn add(self, item: Self) -> Self::Output {
-        IntegerRingElement { val: self.val + item.val }
+        IntegerRingElement { val: self.val + item.val, parent: self.parent }
     }
 }
 
 impl Sub for IntegerRingElement {
     type Output = Self;
     fn sub(self, item: Self) -> Self::Output {
-        IntegerRingElement { val: self.val - item.val }
+        IntegerRingElement { val: self.val - item.val, parent: self.parent }
     }
 }
 
 impl Mul for IntegerRingElement {
     type Output = Self;
     fn mul(self, item: Self) -> Self::Output {
-        IntegerRingElement { val: self.val * item.val }
+        IntegerRingElement { val: self.val * item.val, parent: self.parent }
     }
 }
 
 impl Rem for IntegerRingElement {
     type Output = Self;
     fn rem(self, item: Self) -> Self::Output {
-        IntegerRingElement { val: self.val % item.val }
+        IntegerRingElement { val: self.val % item.val, parent: self.parent }
     }
 }
 
 impl AddAssign for IntegerRingElement {
     fn add_assign(&mut self, other: Self) {
-        *self = Self { val: &self.val + other.val };
+        *self = Self { val: &self.val + other.val, parent: self.parent };
     }
 }
 
 impl SubAssign for IntegerRingElement {
     fn sub_assign(&mut self, other: Self) {
-        *self = Self { val: &self.val - other.val };
+        *self = Self { val: &self.val - other.val, parent: self.parent };
     }
 }
 
 impl MulAssign for IntegerRingElement {
     fn mul_assign(&mut self, other: Self) {
-        *self = Self { val: &self.val * other.val };
+        *self = Self { val: &self.val * other.val, parent: self.parent };
     }
 }
 
 impl RemAssign for IntegerRingElement {
     fn rem_assign(&mut self, other: Self) {
-        *self = Self { val: &self.val & other.val };
+        *self = Self { val: &self.val & other.val, parent: self.parent };
     }
 }
 
@@ -100,7 +105,7 @@ impl Ord for IntegerRingElement {
 // ----------------------------------------------------------------
 // Set of Integer Ring
 // ----------------------------------------------------------------
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct IntegerRing;
 
 impl fmt::Display for IntegerRing {
@@ -112,26 +117,26 @@ impl fmt::Display for IntegerRing {
 impl<T> FnOnce<(T,)> for IntegerRing where Integer: From<T> {
     type Output = IntegerRingElement;
     extern "rust-call" fn call_once(self, (val,): (T,)) -> Self::Output {
-        IntegerRingElement { val: Integer::from(val) }
+        IntegerRingElement { val: Integer::from(val), parent: self }
     }
 }
 
 impl<T> FnMut<(T,)> for IntegerRing where Integer: From<T> {
     extern "rust-call" fn call_mut(&mut self, (val,): (T,)) -> Self::Output {
-        IntegerRingElement { val: Integer::from(val) }
+        IntegerRingElement { val: Integer::from(val), parent: *self }
     }
 }
 
 impl<T> Fn<(T,)> for IntegerRing where Integer: From<T> {
     extern "rust-call" fn call(&self, (val,): (T,)) -> Self::Output {
-        IntegerRingElement { val: Integer::from(val) }
+        IntegerRingElement { val: Integer::from(val), parent: *self }
     }
 }
 
 impl IntegerRing {
     pub fn from_str_radix(&self, n_str: &str, radix: i32) -> IntegerRingElement {
         match Integer::from_str_radix(n_str, radix) {
-            Ok(v) => IntegerRingElement { val: v },
+            Ok(v) => IntegerRingElement { val: v, parent: *self },
             Err(e) => {
                 panic!("Error from_str_radix: {}", e);
             }
@@ -154,6 +159,7 @@ mod tests {
 
     #[test]
     fn it_works() {
+        let x = ZZ(5);
         assert_eq!(ZZ(2) + ZZ(5), ZZ(7));
         assert_eq!(ZZ(2) - ZZ(5), ZZ(-3));
         assert_eq!(ZZ(5) - ZZ(2), ZZ(3));
