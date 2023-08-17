@@ -4,11 +4,12 @@
 use std::fmt;
 use std::ops::*;
 use rug::Integer;
+use std::cmp::Ordering;
 
 // ----------------------------------------------------------------
 // element of Integer Ring
 // ----------------------------------------------------------------
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 struct IntegerRingElement {
     val: Integer,
 }
@@ -62,6 +63,21 @@ impl MulAssign for IntegerRingElement {
 }
 
 // ----------------------------------------------------------------
+// Comparison Operators
+// ----------------------------------------------------------------
+impl PartialOrd for IntegerRingElement {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for IntegerRingElement {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.val.cmp(&other.val)
+    }
+}
+
+// ----------------------------------------------------------------
 // Set of Integer Ring
 // ----------------------------------------------------------------
 #[derive(Debug)]
@@ -106,5 +122,11 @@ mod tests {
         assert_eq!(ZZ(2) - ZZ(5), ZZ(-3));
         assert_eq!(ZZ(5) - ZZ(2), ZZ(3));
         assert_eq!(ZZ(5) * ZZ(2), ZZ(10));
+        assert!(ZZ(5) == ZZ(5));
+        assert!(ZZ(5) >= ZZ(5));
+        assert!(ZZ(6) >= ZZ(5));
+        assert!(ZZ(6) > ZZ(5));
+        assert!(ZZ(5) < ZZ(6));
+        assert!(ZZ(5) <= ZZ(6));
     }
 }
