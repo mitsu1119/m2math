@@ -1,6 +1,7 @@
 use std::fmt;
 use std::ops::*;
 use rug::Integer;
+use rug::integer::IsPrime;
 use std::cmp::Ordering;
 
 // ----------------------------------------------------------------
@@ -14,6 +15,15 @@ pub struct IntegerRingElement {
 impl fmt::Display for IntegerRingElement {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.val)
+    }
+}
+
+impl IntegerRingElement {
+    fn is_prime(&self) -> bool {
+        match self.val.is_probably_prime(100) {
+            IsPrime::No => false,
+            _ => true
+        }
     }
 }
 
@@ -156,6 +166,9 @@ mod tests {
         assert!(ZZ(6) > ZZ(5));
         assert!(ZZ(5) < ZZ(6));
         assert!(ZZ(5) <= ZZ(6));
+        assert!(!ZZ(10).is_prime());
+        assert!(!ZZ.from_str("63881801352479295820993181514863074496724272670065922597057931030213707690709").is_prime());
+        assert!(ZZ.from_str("12513184754843391318297613509216180345616625665202041567883117414712490368118894860874737593058204662888282042487382831063055422314262328170908247278561361").is_prime());
     }
 
     #[test]
