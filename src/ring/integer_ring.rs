@@ -41,6 +41,13 @@ impl Mul for IntegerRingElement {
     }
 }
 
+impl Rem for IntegerRingElement {
+    type Output = Self;
+    fn rem(self, item: Self) -> Self::Output {
+        IntegerRingElement { val: self.val % item.val }
+    }
+}
+
 impl AddAssign for IntegerRingElement {
     fn add_assign(&mut self, other: Self) {
         *self = Self { val: &self.val + other.val };
@@ -56,6 +63,12 @@ impl SubAssign for IntegerRingElement {
 impl MulAssign for IntegerRingElement {
     fn mul_assign(&mut self, other: Self) {
         *self = Self { val: &self.val * other.val };
+    }
+}
+
+impl RemAssign for IntegerRingElement {
+    fn rem_assign(&mut self, other: Self) {
+        *self = Self { val: &self.val & other.val };
     }
 }
 
@@ -135,6 +148,8 @@ mod tests {
         assert_eq!(ZZ(2) - ZZ(5), ZZ(-3));
         assert_eq!(ZZ(5) - ZZ(2), ZZ(3));
         assert_eq!(ZZ(5) * ZZ(2), ZZ(10));
+        assert_eq!(ZZ(10) % ZZ(6), ZZ(4));
+        assert_eq!(ZZ(-10) % ZZ(6), ZZ(-4));
         assert!(ZZ(5) == ZZ(5));
         assert!(ZZ(5) >= ZZ(5));
         assert!(ZZ(6) >= ZZ(5));
