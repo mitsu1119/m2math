@@ -17,6 +17,8 @@ impl fmt::Display for FiniteField {
 
 impl FiniteField {
     fn new(order: IntegerRingElement) -> Self {
+        // TODO: finite field that the order is a prime power
+        if !order.is_prime() { panic!("The order of a finite field must be a prime"); }
         Self { order: order }
     }
 }
@@ -36,5 +38,18 @@ mod tests {
     fn it_works() {
         let Fp = GF(ZZ(5));
         println!("{}", Fp);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_panic_finite_field_composite_number_order() {
+        GF(ZZ.from_str("12345678913280321980321804372894327894327894327899"));
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_panic_finite_field_prime_power_order() {
+        // q = 2647^10
+        GF(ZZ.from_str("16886491005078742190744687163972049"));
     }
 }

@@ -19,7 +19,7 @@ impl fmt::Display for IntegerRingElement {
 }
 
 impl IntegerRingElement {
-    fn is_prime(&self) -> bool {
+    pub fn is_prime(&self) -> bool {
         match self.val.is_probably_prime(100) {
             IsPrime::No => false,
             _ => true
@@ -129,7 +129,7 @@ impl<T> Fn<(T,)> for IntegerRing where Integer: From<T> {
 }
 
 impl IntegerRing {
-    fn from_str_radix(&self, n_str: &str, radix: i32) -> IntegerRingElement {
+    pub fn from_str_radix(&self, n_str: &str, radix: i32) -> IntegerRingElement {
         match Integer::from_str_radix(n_str, radix) {
             Ok(v) => IntegerRingElement { val: v },
             Err(e) => {
@@ -138,7 +138,7 @@ impl IntegerRing {
         }
     }
 
-    fn from_str(&self, n_str: &str) -> IntegerRingElement {
+    pub fn from_str(&self, n_str: &str) -> IntegerRingElement {
         self.from_str_radix(n_str, 10)
     }
 }
