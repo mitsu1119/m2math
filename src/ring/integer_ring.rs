@@ -3,6 +3,8 @@ use std::ops::*;
 use rug::Integer;
 use rug::integer::IsPrime;
 use std::cmp::Ordering;
+use crate::util::element::Element;
+use crate::util::set::Set;
 
 // ----------------------------------------------------------------
 // element of Integer Ring
@@ -26,8 +28,11 @@ impl IntegerRingElement {
             _ => true
         }
     }
+}
 
-    pub fn parent(&self) -> IntegerRing {
+impl Element for IntegerRingElement {
+    type Parent = IntegerRing;
+    fn parent(&self) -> Self::Parent {
         self.parent.clone()
     }
 }
@@ -108,6 +113,10 @@ impl Ord for IntegerRingElement {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct IntegerRing;
 
+impl Set for IntegerRing {
+    type Child = IntegerRingElement;
+}
+
 impl fmt::Display for IntegerRing {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "Integer Ring")
@@ -160,6 +169,7 @@ mod tests {
     #[test]
     fn it_works() {
         let x = ZZ(5);
+        println!("ueiuei {}", x.parent());
         assert_eq!(ZZ(2) + ZZ(5), ZZ(7));
         assert_eq!(ZZ(2) - ZZ(5), ZZ(-3));
         assert_eq!(ZZ(5) - ZZ(2), ZZ(3));
