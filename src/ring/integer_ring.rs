@@ -101,6 +101,21 @@ impl RemAssign for IntegerRingElement<'_> {
 }
 
 // ----------------------------------------------------------------
+// Comparison Operators
+// ----------------------------------------------------------------
+impl PartialOrd for IntegerRingElement<'_> {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for IntegerRingElement<'_> {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.val.cmp(&other.val)
+    }
+}
+
+// ----------------------------------------------------------------
 // Set of Integer Ring
 // ----------------------------------------------------------------
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
@@ -166,6 +181,12 @@ mod tests {
         assert_eq!(ZZ.from_str("-10") % ZZ.lift(6), ZZ.lift(-4));
         assert_eq!(*ZZ.lift(5).parent(), ZZ);
         assert_eq!(ZZ.lift(5).parent(), &ZZ);
+        assert!(ZZ.lift(5) == ZZ.lift(5));
+        assert!(ZZ.lift(5) >= ZZ.lift(5));
+        assert!(ZZ.lift(6) >= ZZ.lift(5));
+        assert!(ZZ.lift(6) > ZZ.lift(5));
+        assert!(ZZ.lift(5) < ZZ.lift(6));
+        assert!(ZZ.lift(5) <= ZZ.lift(6));
     }
 
     #[test]
