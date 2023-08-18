@@ -1,6 +1,6 @@
 use crate::util::set::Set;
 
 pub trait Element {
-    type Parent: Set;
+    type Parent;
     fn parent(&self) -> Self::Parent;
 }

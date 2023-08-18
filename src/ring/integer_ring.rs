@@ -21,6 +21,13 @@ impl fmt::Display for IntegerRingElement<'_> {
     }
 }
 
+impl<'a> Element for IntegerRingElement<'a> {
+    type Parent = &'a IntegerRing;
+    fn parent(&self) -> Self::Parent {
+        self.parent
+    }
+}
+
 impl IntegerRingElement<'_> {
     pub fn is_prime(&self) -> bool {
         match self.val.is_probably_prime(100) {
@@ -105,6 +112,10 @@ impl fmt::Display for IntegerRing {
     }
 }
 
+impl<'a> Set<'a> for IntegerRing {
+    type Child = IntegerRingElement<'a>;
+}
+
 impl<'a> IntegerRing {
     fn lift<T>(&'a self, val: T) -> IntegerRingElement where Integer: From<T> {
         IntegerRingElement {  val: Integer::from(val), parent: self }
@@ -152,6 +163,9 @@ mod tests {
         assert_eq!(ZZ.lift(5) * ZZ.lift(2), ZZ.lift(10));
         assert_eq!(ZZ.lift(10) % ZZ.lift(6), ZZ.lift(4));
         assert_eq!(ZZ.lift(-10) % ZZ.lift(6), ZZ.lift(-4));
+        assert_eq!(ZZ.from_str("-10") % ZZ.lift(6), ZZ.lift(-4));
+        assert_eq!(*ZZ.lift(5).parent(), ZZ);
+        assert_eq!(ZZ.lift(5).parent(), &ZZ);
     }
 
     #[test]

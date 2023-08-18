@@ -1,3 +1,3 @@
-pub trait Set {
+pub trait Set<'a> {
     type Child;
 }
