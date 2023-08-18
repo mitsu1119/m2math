@@ -5,6 +5,7 @@ use rug::integer::IsPrime;
 use std::cmp::Ordering;
 use crate::util::element::Element;
 use crate::util::set::Set;
+use crate::ring::ring::Ring;
 
 // ----------------------------------------------------------------
 // element of Integer Ring
@@ -15,6 +16,9 @@ pub struct IntegerRingElement<'a> {
     parent: &'a IntegerRing
 }
 
+impl<'a> Ring for IntegerRingElement<'a> {
+}
+
 impl fmt::Display for IntegerRingElement<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.val)
@@ -22,8 +26,8 @@ impl fmt::Display for IntegerRingElement<'_> {
 }
 
 impl<'a> Element for IntegerRingElement<'a> {
-    type Parent = &'a IntegerRing;
-    fn parent(&self) -> Self::Parent {
+    type Parent = IntegerRing;
+    fn parent(&self) -> &'a Self::Parent {
         self.parent
     }
 }
@@ -163,8 +167,6 @@ mod tests {
     fn it_works() {
         let mut x = ZZ.lift(5);
         println!("{:?}", x);
-        assert!(!ZZ.from_str("63881801352479295820993181514863074496724272670065922597057931030213707690709").is_prime());
-        assert!(ZZ.from_str("12513184754843391318297613509216180345616625665202041567883117414712490368118894860874737593058204662888282042487382831063055422314262328170908247278561361").is_prime());
 
         x += ZZ.lift(3);
         assert_eq!(x, ZZ.lift(8));
@@ -187,6 +189,9 @@ mod tests {
         assert!(ZZ.lift(6) > ZZ.lift(5));
         assert!(ZZ.lift(5) < ZZ.lift(6));
         assert!(ZZ.lift(5) <= ZZ.lift(6));
+
+        assert!(!ZZ.from_str("63881801352479295820993181514863074496724272670065922597057931030213707690709").is_prime());
+        assert!(ZZ.from_str("12513184754843391318297613509216180345616625665202041567883117414712490368118894860874737593058204662888282042487382831063055422314262328170908247278561361").is_prime());
     }
 
     #[test]
