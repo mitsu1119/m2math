@@ -21,6 +21,15 @@ impl fmt::Display for IntegerRingElement<'_> {
     }
 }
 
+impl IntegerRingElement<'_> {
+    pub fn is_prime(&self) -> bool {
+        match self.val.is_probably_prime(100) {
+            IsPrime::No => false,
+            _ => true
+        }
+    }
+}
+
 // ----------------------------------------------------------------
 // Arithmetic Operators
 // ----------------------------------------------------------------
@@ -41,25 +50,20 @@ impl<'a> IntegerRing {
     fn lift<T>(&'a self, val: T) -> IntegerRingElement where Integer: From<T> {
         IntegerRingElement {  val: Integer::from(val), parent: self }
     }
-}
 
-
-/*
-impl IntegerRing {
-    pub fn from_str_radix(&self, n_str: &str, radix: i32) -> IntegerRingElement {
+    fn from_str_radix(&'a self, n_str: &str, radix: i32) -> IntegerRingElement {
         match Integer::from_str_radix(n_str, radix) {
-            Ok(v) => IntegerRingElement { val: v, parent: *self },
+            Ok(v) => IntegerRingElement { val: v, parent: self },
             Err(e) => {
                 panic!("Error from_str_radix: {}", e);
             }
         }
     }
 
-    pub fn from_str(&self, n_str: &str) -> IntegerRingElement {
+    fn from_str(&'a self, n_str: &str) -> IntegerRingElement {
         self.from_str_radix(n_str, 10)
     }
 }
-*/
 
 pub const ZZ: IntegerRing = IntegerRing;
 
@@ -74,6 +78,19 @@ mod tests {
     fn it_works() {
         let x = ZZ.lift(5);
         println!("{:?}", x);
-        println!("{:?}", x);
+        assert!(!ZZ.from_str("63881801352479295820993181514863074496724272670065922597057931030213707690709").is_prime());
+        assert!(ZZ.from_str("12513184754843391318297613509216180345616625665202041567883117414712490368118894860874737593058204662888282042487382831063055422314262328170908247278561361").is_prime());
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_panic_radix_from_str() {
+        ZZ.from_str("12345678913280321980321804372894327894327894327899f");
+    }
+    
+    #[test]
+    #[should_panic]
+    fn test_panic_radix_from_str_radix() {
+        ZZ.from_str_radix("12345678913280321980321804372894327894327894327899", 8);
     }
 }
