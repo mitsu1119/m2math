@@ -136,11 +136,11 @@ impl<'a> Set<'a> for IntegerRing {
 }
 
 impl<'a> IntegerRing {
-    fn lift<T>(&'a self, val: T) -> IntegerRingElement where Integer: From<T> {
+    pub fn lift<T>(&'a self, val: T) -> IntegerRingElement where Integer: From<T> {
         IntegerRingElement {  val: Integer::from(val), parent: self }
     }
 
-    fn from_str_radix(&'a self, n_str: &str, radix: i32) -> IntegerRingElement {
+    pub fn from_str_radix(&'a self, n_str: &str, radix: i32) -> IntegerRingElement {
         match Integer::from_str_radix(n_str, radix) {
             Ok(v) => IntegerRingElement { val: v, parent: self },
             Err(e) => {
@@ -149,7 +149,7 @@ impl<'a> IntegerRing {
         }
     }
 
-    fn from_str(&'a self, n_str: &str) -> IntegerRingElement {
+    pub fn from_str(&'a self, n_str: &str) -> IntegerRingElement {
         self.from_str_radix(n_str, 10)
     }
 }
