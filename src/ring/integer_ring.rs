@@ -6,6 +6,7 @@ use std::cmp::Ordering;
 use crate::util::element::Element;
 use crate::util::set::Set;
 use crate::ring::ring::Ring;
+use crate::util::set::Lifter;
 
 // ----------------------------------------------------------------
 // element of Integer Ring
@@ -135,11 +136,13 @@ impl<'a> Set<'a> for IntegerRing {
     type Child = IntegerRingElement<'a>;
 }
 
-impl<'a> IntegerRing {
-    pub fn lift<T>(&'a self, val: T) -> IntegerRingElement where Integer: From<T> {
-        IntegerRingElement {  val: Integer::from(val), parent: self }
+impl<'a, T> Lifter<'a, T> for IntegerRing where Integer: From<T> {
+    fn lift(&'a self, val: T) -> Self::Child {
+        IntegerRingElement { val: Integer::from(val), parent: self }
     }
+}
 
+impl<'a> IntegerRing {
     pub fn from_str_radix(&'a self, n_str: &str, radix: i32) -> IntegerRingElement {
         match Integer::from_str_radix(n_str, radix) {
             Ok(v) => IntegerRingElement { val: v, parent: self },

@@ -2,6 +2,7 @@ use std::fmt;
 use crate::util::element::Element;
 use crate::util::set::Set;
 use crate::ring::integer_ring::*;
+use crate::util::set::Lifter;
 
 // ----------------------------------------------------------------
 // element of Integer Ring
